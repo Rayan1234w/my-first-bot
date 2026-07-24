@@ -32,16 +32,16 @@ const flagsGameData = [
     { country: "مصر", flag: "🇪🇬", options: ["مصر", "المغرب", "العراق", "تونس"] }
 ];
 
-// قائمة ألعاب فكك (كلمات مبعثرة)
+// لعبة فكك (تعرض الكلمة كاملة والمطلوب تفكيكها)
 const fakkData = [
-    { scrambled: "م k ت بة", correct: "مكتبة" },
-    { scrambled: "ح ا س ب", correct: "حاسب" },
-    { scrambled: "ب ر م ج ة", correct: "برمجة" },
-    { scrambled: "د ي س ك و ر د", correct: "ديسكورد" },
-    { scrambled: "ق ه و ة", correct: "قهوة" }
+    { word: "مكتبة", spaced: "م ك ت ب ة" },
+    { word: "حاسب", spaced: "ح ا س ب" },
+    { word: "برمجة", spaced: "ب ر م ج ة" },
+    { word: "ديسكورد", spaced: "د ي س ك و ر د" },
+    { word: "قهوة", spaced: "ق ه و ة" }
 ];
 
-// لعبة ركب
+// لعبة ركب (تعرض الحروف مفرقة والمطلوب تركيبها)
 const rakibData = [
     { scrambled: "س م ك", correct: "سمك" },
     { scrambled: "ق م ر", correct: "قمر" },
@@ -116,7 +116,7 @@ client.on('messageCreate', async message => {
                 { name: '🎰 الحظ السعيد', value: '`!حظ`', inline: true },
                 { name: '❓ لعبة الأسئلة', value: '`!اسئلة`', inline: true },
                 { name: '🌍 تخمين الأعلام', value: '`!اعلام`', inline: true },
-                { name: '🧩 فكك وتركيب', value: '`!فكك`', inline: true },
+                { name: '🧩 لعبة فكك', value: '`!فكك`', inline: true },
                 { name: '🔤 لعبة ركب', value: '`!ركب`', inline: true },
                 { name: '🧠 لعبة حزر', value: '`!حزر`', inline: true }
             )
@@ -254,11 +254,11 @@ client.on('messageCreate', async message => {
         });
     }
 
-   if (message.content === '!فكك') {
+    if (message.content === '!فكك') {
         const randomWord = fakkData[Math.floor(Math.random() * fakkData.length)];
         const embed = new EmbedBuilder()
-            .setTitle('🧩 لعبة ركب الكلمات')
-            .setDescription(`رتب الحروف المفرقة التالية لتكون الكلمة الصحيحة:\n\n# 🔤 ${randomWord.scrambled}`)
+            .setTitle('🧩 لعبة فكك الكلمات')
+            .setDescription(`فكك الكلمة التالية إلى حروف مسافة بينها:\n\n# 🔤 ${randomWord.word}`)
             .setColor(0x5865F2);
 
         await message.reply({ embeds: [embed] });
@@ -267,10 +267,10 @@ client.on('messageCreate', async message => {
         const collector = message.channel.createMessageCollector({ filter, time: 20000, max: 1 });
 
         collector.on('collect', response => {
-            if (response.content.trim() === randomWord.correct) {
-                message.channel.send(`🎉 مبروك يا ${message.author}! الكلمة صحيحة: **${randomWord.correct}** 🏆`);
+            if (response.content.trim() === randomWord.spaced) {
+                message.channel.send(`🎉 مبروك يا ${message.author}! التفكيك صحيح: **${randomWord.spaced}** 🏆`);
             } else {
-                message.channel.send(`❌ خطأ! الكلمة الصحيحة كانت: **${randomWord.correct}**`);
+                message.channel.send(`❌ خطأ! التفكيك الصحيح كان: **${randomWord.spaced}**`);
             }
         });
     }
