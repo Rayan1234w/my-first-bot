@@ -34,7 +34,19 @@ const flagsGameData = [
     { country: "إيطاليا", flag: "🇮🇹", options: ["إسبانيا", "إيطاليا", "فرنسا", "اليونان"] }
 ];
 
-// لعبة فكك (محدثة بـ 30 كلمة جديدة ومتنوعة)
+// لعبة عواصم الدول (جديدة)
+const capitalsGameData = [
+    { country: "المملكة العربية السعودية", capital: "الرياض", options: ["الرياض", "جدة", "مكة المكرمة", "الدمام"] },
+    { country: "الإمارات العربية المتحدة", capital: "أبوظبي", options: ["دبي", "أبوظبي", "الشارقة", "عجمان"] },
+    { country: "مصر", capital: "القاهرة", options: ["الإسكندرية", "القاهرة", "الجيزة", "الأقصر"] },
+    { country: "الكويت", capital: "الكويت", options: ["الكويت", "الجهراء", "المباركية", "السالمية"] },
+    { country: "قطر", capital: "الدوحة", options: ["الوكرة", "الدوحة", "الخور", "لوسيل"] },
+    { country: "اليابان", capital: "طوكيو", options: ["أوساكا", "طوكيو", "كيوتو", "هيروشيما"] },
+    { country: "فرنسا", capital: "باريس", options: ["مارسيليا", "ليون", "باريس", "نيس"] },
+    { country: "المملكة المتحدة", capital: "لندن", options: ["مانشستر", "لندن", "ليفربول", "برمنغهام"] }
+];
+
+// لعبة فكك (30+ كلمة)
 const fakkData = [
     { word: "مكتبة", spaced: "م ك ت ب ة" },
     { word: "حاسب", spaced: "ح ا س ب" },
@@ -157,6 +169,7 @@ client.on('messageCreate', async message => {
                 { name: '🎰 الحظ السعيد', value: '`!حظ`', inline: true },
                 { name: '❓ لعبة الأسئلة', value: '`!اسئلة`', inline: true },
                 { name: '🌍 تخمين الأعلام', value: '`!اعلام`', inline: true },
+                { name: '🏛️ لعبة العواصم', value: '`!عواصم`', inline: true },
                 { name: '🧩 لعبة فكك', value: '`!فكك`', inline: true },
                 { name: '🔤 لعبة ركب', value: '`!ركب`', inline: true },
                 { name: '🧠 لعبة حزر', value: '`!حزر`', inline: true }
@@ -290,6 +303,42 @@ client.on('messageCreate', async message => {
                 await interaction.update({ content: `🎉 كفو! إجابتك صحيحة، العلم لـ **${randomData.country}** ${randomData.flag}`, components: [] });
             } else {
                 await interaction.update({ content: `❌ خطأ! الإجابة الصحيحة هي: **${randomData.country}** ${randomData.flag}`, components: [] });
+            }
+            collector.stop();
+        });
+    }
+
+    if (message.content === '!عواصم') {
+        const randomCapital = capitalsGameData[Math.floor(Math.random() * capitalsGameData.length)];
+        const shuffledOptions = shuffleArray([...randomCapital.options]);
+
+        const embed = new EmbedBuilder()
+            .setTitle('🏛️ لعبة عواصم الدول')
+            .setDescription(`ما هي عاصمة دولة **${randomCapital.country}**؟`)
+            .setColor(0x5865F2);
+
+        const row = new ActionRowBuilder();
+        shuffledOptions.forEach((option, index) => {
+            row.addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`capital_${index}_${option}`)
+                    .setLabel(option)
+                    .setStyle(ButtonStyle.Primary)
+            );
+        });
+
+        const gameMessage = await message.reply({ embeds: [embed], components: [row] });
+        const collector = gameMessage.createMessageComponentCollector({ time: 30000 });
+
+        collector.on('collect', async interaction => {
+            if (interaction.user.id !== message.author.id) {
+                return interaction.reply({ content: '❌ هذه اللعبة ليست لك!', ephemeral: true });
+            }
+            const selectedOption = interaction.customId.split('_').slice(2).join('_');
+            if (selectedOption === randomCapital.capital) {
+                await interaction.update({ content: `🎉 كفو يا ${message.author}! عاصمة ${randomCapital.country} هي **${randomCapital.capital}** 🏆`, components: [] });
+            } else {
+                await interaction.update({ content: `❌ خطأ! عاصمة ${randomCapital.country} الصحيحة هي: **${randomCapital.capital}**`, components: [] });
             }
             collector.stop();
         });
