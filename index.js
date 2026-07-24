@@ -148,6 +148,7 @@ client.on('messageCreate', async message => {
             oButtonStyle: ButtonStyle.Primary,
             mentionUser: true, 
             timeoutTime: 60000,
+            requestMessage: '{player}, لقد تلقيت دعوة للعب ضد {opponent}!',
             turnMessage: 'دور اللاعب {player}.',
             winMessage: 'فاز اللاعب {player} باللعبة!',
             tieMessage: 'تعادل اللاعبان!',
