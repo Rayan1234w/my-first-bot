@@ -254,11 +254,11 @@ client.on('messageCreate', async message => {
         });
     }
 
-    if (message.content === '!فكك') {
+   if (message.content === '!فكك') {
         const randomWord = fakkData[Math.floor(Math.random() * fakkData.length)];
         const embed = new EmbedBuilder()
-            .setTitle('🧩 لعبة فكك الكلمات')
-            .setDescription(`رتب الحروف التالية لتكون الكلمة الصحيحة:\n\n# 🔤 ${randomWord.scrambled}`)
+            .setTitle('🧩 لعبة ركب الكلمات')
+            .setDescription(`رتب الحروف المفرقة التالية لتكون الكلمة الصحيحة:\n\n# 🔤 ${randomWord.scrambled}`)
             .setColor(0x5865F2);
 
         await message.reply({ embeds: [embed] });
