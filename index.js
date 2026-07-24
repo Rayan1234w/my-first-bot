@@ -1,15 +1,17 @@
 const express = require('express');
 const app = express();
+const port = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
-  res.send('Bot is running!');
+  res.send('Bot is alive!');
 });
 
-app.listen(3000, () => {
-  console.log('Web server is ready!');
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
+
 const { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits } = require('discord.js');
-const { TicTacToe, ConnectFour, RockPaperScissors, GuessTheNumber, QuickClick, Slot, Snake } = require('discord-gamecord');
+const { TicTacToe, ConnectFour, RockPaperScissors, GuessTheNumber, QuickClick, Slot } = require('discord-gamecord');
 
 const client = new Client({
     intents: [
@@ -113,7 +115,6 @@ client.on('messageCreate', async message => {
                 { name: '🔢 تخمين الرقم', value: '`!تخمين`', inline: true },
                 { name: '⚡ تحدي السرعة', value: '`!سريع`', inline: true },
                 { name: '🎰 الحظ السعيد', value: '`!حظ`', inline: true },
-                { name: '🐍 لعبة الثعبان', value: '`!ثعبان`', inline: true },
                 { name: '❓ لعبة الأسئلة', value: '`!اسئلة`', inline: true },
                 { name: '🌍 تخمين الأعلام', value: '`!اعلام`', inline: true },
                 { name: '🧩 فكك وتركيب', value: '`!فكك`', inline: true },
@@ -129,11 +130,29 @@ client.on('messageCreate', async message => {
     // الألعاب الكلاسيكية الخارجية
     if (message.content === '!xo') {
         const Game = new TicTacToe({
-            message: message, isSlashGame: false,
+            message: message, 
+            isSlashGame: false,
             opponent: message.mentions.users.first() || message.author,
-            embed: { title: 'لعبة إكس أو', color: '#5865F2' },
-            emojis: { x: '❌', o: '⭕', blank: '◼️' },
-            mentionUser: true, timeoutTime: 60000,
+            embed: { 
+                title: 'لعبة إكس أو', 
+                color: '#5865F2',
+                statusTitle: 'الحالة',
+                overTitle: 'انتهت اللعبة'
+            },
+            emojis: {
+                xButton: '❌',
+                oButton: '⭕',
+                blankButton: '➖'
+            },
+            xButtonStyle: ButtonStyle.Danger,
+            oButtonStyle: ButtonStyle.Primary,
+            mentionUser: true, 
+            timeoutTime: 60000,
+            turnMessage: 'دور اللاعب {player}.',
+            winMessage: 'فاز اللاعب {player} باللعبة!',
+            tieMessage: 'تعادل اللاعبان!',
+            timeoutMessage: 'انتهى الوقت بسبب عدم التفاعل!',
+            playerOnlyMessage: 'عذراً، فقط {player} يمكنه استخدام الأزرار.'
         });
         Game.startGame();
     }
@@ -182,17 +201,6 @@ client.on('messageCreate', async message => {
         const Game = new Slot({
             message: message, isSlashGame: false,
             embed: { title: 'لعبة الحظ (Slot Machine)', color: '#5865F2' },
-            timeoutTime: 60000,
-        });
-        Game.startGame();
-    }
-
-    if (message.content === '!ثعبان') {
-        const Game = new Snake({
-            message: message, isSlashGame: false,
-            opponent: message.mentions.users.first() || message.author,
-            embed: { title: 'لعبة الثعبان (Snake)', color: '#5865F2' },
-            emojis: { board: '⬛', food: '🍎', up: '⬆️', down: '⬇️', left: '⬅️', right: '➡️' },
             timeoutTime: 60000,
         });
         Game.startGame();
@@ -337,19 +345,6 @@ client.on('messageCreate', async message => {
             }
         });
     }
-});
-
-// سيرفر Express لمنصة Render
-const express = require('express');
-const app = express();
-const port = process.env.PORT || 3000;
-
-app.get('/', (req, res) => {
-  res.send('Bot is alive!');
-});
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
 });
 
 client.login(process.env.TOKEN);
