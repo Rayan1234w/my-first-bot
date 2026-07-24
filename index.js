@@ -1,3 +1,13 @@
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Bot is running!');
+});
+
+app.listen(3000, () => {
+  console.log('Web server is ready!');
+});
 const { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits } = require('discord.js');
 const { TicTacToe, ConnectFour, RockPaperScissors, GuessTheNumber, QuickClick, Slot, Snake } = require('discord-gamecord');
 
