@@ -34,7 +34,7 @@ const flagsGameData = [
 
 // قائمة ألعاب فكك (كلمات مبعثرة)
 const fakkData = [
-    { scrambled: "م ك ت بة", correct: "مكتبة" },
+    { scrambled: "م k ت بة", correct: "مكتبة" },
     { scrambled: "ح ا س ب", correct: "حاسب" },
     { scrambled: "ب ر م ج ة", correct: "برمجة" },
     { scrambled: "د ي س ك و ر د", correct: "ديسكورد" },
@@ -79,7 +79,7 @@ client.once('ready', () => {
 client.on('messageCreate', async message => {
     if (message.author.bot) return;
 
-    // أمر الحذف (شغال طبيعي عند كتابته بالشات ولكن غير موجود في اللائحة)
+    // أمر الحذف (شغال طبيعي بالشات وغير ظاهر بالهيلب)
     if (message.content.startsWith('!clear')) {
         if (!message.member.permissions.has(PermissionFlagsBits.ManageMessages)) {
             return message.reply({ content: '❌ ما عندك صلاحية لإستخدام هذا الأمر!', ephemeral: true });
@@ -117,7 +117,7 @@ client.on('messageCreate', async message => {
                 { name: '🎰 الحظ السعيد', value: '`!حظ`', inline: true },
                 { name: '❓ لعبة الأسئلة', value: '`!اسئلة`', inline: true },
                 { name: '🌍 تخمين الأعلام', value: '`!اعلام`', inline: true },
-                { name: '🧩 فكك الكلمات', value: '`!فكك`', inline: true },
+                { name: '🧩 فكك وتركيب', value: '`!فكك`', inline: true },
                 { name: '🔤 لعبة ركب', value: '`!ركب`', inline: true },
                 { name: '🧠 لعبة حزر', value: '`!حزر`', inline: true }
             )
@@ -126,33 +126,13 @@ client.on('messageCreate', async message => {
         await message.reply({ embeds: [helpEmbed] });
     }
 
-    // الألعاب الكلاسيكية
+    // الألعاب الخارجية (Gamecord) بدون الثعبان
     if (message.content === '!xo') {
         const Game = new TicTacToe({
-            message: message, 
-            isSlashGame: false,
+            message: message, isSlashGame: false,
             opponent: message.mentions.users.first() || message.author,
-            embed: { 
-                title: 'لعبة إكس أو', 
-                color: '#5865F2',
-                statusTitle: 'الحالة',
-                overTitle: 'انتهت اللعبة'
-            },
-            emojis: {
-                xButton: '❌',
-                oButton: '⭕',
-                blankButton: '➖'
-            },
-            xButtonStyle: ButtonStyle.Danger,
-            oButtonStyle: ButtonStyle.Primary,
-            mentionUser: true, 
-            timeoutTime: 60000,
-            requestMessage: '{player}, لقد تلقيت دعوة للعب ضد {opponent}!',
-            turnMessage: 'دور اللاعب {player}.',
-            winMessage: 'فاز اللاعب {player} باللعبة!',
-            tieMessage: 'تعادل اللاعبان!',
-            timeoutMessage: 'انتهى الوقت بسبب عدم التفاعل!',
-            playerOnlyMessage: 'عذراً، فقط {player} يمكنه استخدام الأزرار.'
+            embed: { title: 'لعبة إكس أو', color: '#5865F2' },
+            mentionUser: true, timeoutTime: 60000,
         });
         Game.startGame();
     }
@@ -162,7 +142,6 @@ client.on('messageCreate', async message => {
             message: message, isSlashGame: false,
             opponent: message.mentions.users.first() || message.author,
             embed: { title: 'لعبة أربع على الحواف', color: '#5865F2' },
-            emojis: { board: '⚪', player1: '🔴', player2: '🟡' },
             mentionUser: true, timeoutTime: 60000,
         });
         Game.startGame();
@@ -173,7 +152,6 @@ client.on('messageCreate', async message => {
             message: message, isSlashGame: false,
             opponent: message.mentions.users.first() || message.author,
             embed: { title: 'حجر ورق مقص', color: '#5865F2' },
-            buttons: { rock: 'حجر', paper: 'ورق', scissors: 'مقص' },
             mentionUser: true, timeoutTime: 60000,
         });
         Game.startGame();
@@ -192,7 +170,7 @@ client.on('messageCreate', async message => {
         const Game = new QuickClick({
             message: message, isSlashGame: false,
             embed: { title: 'تحدي السرعة', color: '#5865F2' },
-            timeoutTime: 60000, button: { text: 'اضغط بسرعة!', style: 'PRIMARY' },
+            timeoutTime: 60000,
         });
         Game.startGame();
     }
@@ -200,13 +178,13 @@ client.on('messageCreate', async message => {
     if (message.content === '!حظ') {
         const Game = new Slot({
             message: message, isSlashGame: false,
-            embed: { title: 'لعبة الحظ (Slot Machine)', color: '#5865F2' },
+            embed: { title: 'لعبة الحظ', color: '#5865F2' },
             timeoutTime: 60000,
         });
         Game.startGame();
     }
 
-    // لعبة الأسئلة
+    // الألعاب الداخلية
     if (message.content === '!اسئلة') {
         const randomTrivia = triviaData[Math.floor(Math.random() * triviaData.length)];
         const shuffledOptions = shuffleArray([...randomTrivia.options]);
@@ -243,7 +221,6 @@ client.on('messageCreate', async message => {
         });
     }
 
-    // لعبة الأعلام
     if (message.content === '!اعلام') {
         const randomData = flagsGameData[Math.floor(Math.random() * flagsGameData.length)];
         const shuffledOptions = shuffleArray([...randomData.options]);
@@ -280,7 +257,6 @@ client.on('messageCreate', async message => {
         });
     }
 
-    // لعبة فكك
     if (message.content === '!فكك') {
         const randomWord = fakkData[Math.floor(Math.random() * fakkData.length)];
         const embed = new EmbedBuilder()
@@ -302,7 +278,6 @@ client.on('messageCreate', async message => {
         });
     }
 
-    // لعبة ركب
     if (message.content === '!ركب') {
         const randomRakib = rakibData[Math.floor(Math.random() * rakibData.length)];
         const embed = new EmbedBuilder()
@@ -324,7 +299,6 @@ client.on('messageCreate', async message => {
         });
     }
 
-    // لعبة حزر
     if (message.content === '!حزر') {
         const randomHazir = hazirData[Math.floor(Math.random() * hazirData.length)];
         const embed = new EmbedBuilder()
