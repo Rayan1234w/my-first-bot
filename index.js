@@ -11,7 +11,6 @@ app.listen(port, () => {
 });
 
 const { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits } = require('discord.js');
-const { TicTacToe, ConnectFour, RockPaperScissors, GuessTheNumber, QuickClick, Slot } = require('discord-gamecord');
 
 const client = new Client({
     intents: [
@@ -109,15 +108,9 @@ client.on('messageCreate', async message => {
             .setTitle('🎮 قائمة ألعاب البوت التفاعلية الشاملة')
             .setDescription('اختر لعبتك المفضلة واكتب أمرها في الشات:')
             .addFields(
-                { name: '❌ إكس أو', value: '`!xo`', inline: true },
-                { name: '🟡 أربع على الحواف', value: '`!اربع`', inline: true },
-                { name: '✂️ حجر ورق مقص', value: '`!rps`', inline: true },
-                { name: '🔢 تخمين الرقم', value: '`!تخمين`', inline: true },
-                { name: '⚡ تحدي السرعة', value: '`!سريع`', inline: true },
-                { name: '🎰 الحظ السعيد', value: '`!حظ`', inline: true },
                 { name: '❓ لعبة الأسئلة', value: '`!اسئلة`', inline: true },
                 { name: '🌍 تخمين الأعلام', value: '`!اعلام`', inline: true },
-                { name: '🧩 فكك وتركيب', value: '`!فكك`', inline: true },
+                { name: '🧩 فكك الكلمات', value: '`!فكك`', inline: true },
                 { name: '🔤 لعبة ركب', value: '`!ركب`', inline: true },
                 { name: '🧠 لعبة حزر', value: '`!حزر`', inline: true },
                 { name: '🧹 مسح الشات', value: '`!clear`', inline: true }
@@ -125,86 +118,6 @@ client.on('messageCreate', async message => {
             .setColor(0x5865F2);
 
         await message.reply({ embeds: [helpEmbed] });
-    }
-
-    // الألعاب الكلاسيكية الخارجية
-    if (message.content === '!xo') {
-        const Game = new TicTacToe({
-            message: message, 
-            isSlashGame: false,
-            opponent: message.mentions.users.first() || message.author,
-            embed: { 
-                title: 'لعبة إكس أو', 
-                color: '#5865F2',
-                statusTitle: 'الحالة',
-                overTitle: 'انتهت اللعبة'
-            },
-            emojis: {
-                xButton: '❌',
-                oButton: '⭕',
-                blankButton: '➖'
-            },
-            xButtonStyle: ButtonStyle.Danger,
-            oButtonStyle: ButtonStyle.Primary,
-            mentionUser: true, 
-            timeoutTime: 60000,
-            requestMessage: '{player}, لقد تلقيت دعوة للعب ضد {opponent}!',
-            turnMessage: 'دور اللاعب {player}.',
-            winMessage: 'فاز اللاعب {player} باللعبة!',
-            tieMessage: 'تعادل اللاعبان!',
-            timeoutMessage: 'انتهى الوقت بسبب عدم التفاعل!',
-            playerOnlyMessage: 'عذراً، فقط {player} يمكنه استخدام الأزرار.'
-        });
-        Game.startGame();
-    }
-
-    if (message.content === '!اربع') {
-        const Game = new ConnectFour({
-            message: message, isSlashGame: false,
-            opponent: message.mentions.users.first() || message.author,
-            embed: { title: 'لعبة أربع على الحواف', color: '#5865F2' },
-            emojis: { board: '⚪', player1: '🔴', player2: '🟡' },
-            mentionUser: true, timeoutTime: 60000,
-        });
-        Game.startGame();
-    }
-
-    if (message.content === '!rps') {
-        const Game = new RockPaperScissors({
-            message: message, isSlashGame: false,
-            opponent: message.mentions.users.first() || message.author,
-            embed: { title: 'حجر ورق مقص', color: '#5865F2' },
-            buttons: { rock: 'حجر', paper: 'ورق', scissors: 'مقص' },
-            mentionUser: true, timeoutTime: 60000,
-        });
-        Game.startGame();
-    }
-
-    if (message.content === '!تخمين') {
-        const Game = new GuessTheNumber({
-            message: message, isSlashGame: false,
-            embed: { title: 'تخمين الرقم', color: '#5865F2' },
-            timeoutTime: 60000, mode: 'buttons'
-        });
-        Game.startGame();
-    }
-
-    if (message.content === '!سريع') {
-        const Game = new QuickClick({
-            message: message, isSlashGame: false,
-            embed: { title: 'تحدي السرعة', color: '#5865F2' },
-            timeoutTime: 60000, button: { text: 'اضغط بسرعة!', style: 'PRIMARY' },
-        });
-        Game.startGame();
-    }
-
-    if (message.content === '!حظ') {
-        const Game = new Slot({
-            message: message, isSlashGame: false,
-            embed: { title: 'لعبة الحظ (Slot Machine)', color: '#5865F2' },
-            timeoutTime: 60000,
-        });
-        Game.startGame();
     }
 
     // لعبة الأسئلة
