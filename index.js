@@ -10,7 +10,6 @@ app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
-
 const { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits } = require('discord.js');
 const { TicTacToe, ConnectFour, RockPaperScissors, GuessTheNumber, QuickClick, Slot } = require('discord-gamecord');
 
@@ -80,7 +79,6 @@ client.once('ready', () => {
 client.on('messageCreate', async message => {
     if (message.author.bot) return;
 
-    // أمر الحذف (شغال طبيعي بالشات وغير ظاهر بالهيلب)
     if (message.content.startsWith('!clear')) {
         if (!message.member.permissions.has(PermissionFlagsBits.ManageMessages)) {
             return message.reply({ content: '❌ ما عندك صلاحية لإستخدام هذا الأمر!', ephemeral: true });
@@ -127,7 +125,6 @@ client.on('messageCreate', async message => {
         await message.reply({ embeds: [helpEmbed] });
     }
 
-    // الألعاب الخارجية (Gamecord) بدون الثعبان
     if (message.content === '!xo') {
         const Game = new TicTacToe({
             message: message, isSlashGame: false,
@@ -185,7 +182,6 @@ client.on('messageCreate', async message => {
         Game.startGame();
     }
 
-    // الألعاب الداخلية
     if (message.content === '!اسئلة') {
         const randomTrivia = triviaData[Math.floor(Math.random() * triviaData.length)];
         const shuffledOptions = shuffleArray([...randomTrivia.options]);
